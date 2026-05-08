@@ -1,0 +1,12 @@
+/* ═══════════════════════════════════════════════════════════
+   SafiPoints — Design System Entry Point
+   Import order matters: tokens first, then modules.
+   ═══════════════════════════════════════════════════════════ */
+
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/layout.css';
+@import './styles/claim.css';
+@import './styles/menu.css';
+@import './styles/pay.css';
+@import './styles/reward-prompt.css';

@@ -1,0 +1,125 @@
+name: CI/CD — SafiPoints
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  # ────────────────── TEST ──────────────────
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Install server dependencies
+        run: npm ci --prefix server
+
+      - name: Install client dependencies
+        run: npm ci --prefix client
+
+      - name: Build React app
+        run: npm run build --prefix client
+
+  # ────────────────── BUILD & PUSH IMAGES ──────────────────
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image names (lowercase)
+        id: vars
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "image_api=ghcr.io/${OWNER}/safipoints-api" >> "$GITHUB_OUTPUT"
+          echo "image_client=ghcr.io/${OWNER}/safipoints-client" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          push: true
+          tags: ${{ steps.vars.outputs.image_api }}:latest,${{ steps.vars.outputs.image_api }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Client image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./client
+          push: true
+          tags: ${{ steps.vars.outputs.image_client }}:latest,${{ steps.vars.outputs.image_client }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ────────────────── DEPLOY ──────────────────
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: deploy
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          command_timeout: 5m
+          script: |
+            cd /var/www/safipoints
+            git fetch origin main && git reset --hard origin/main
+
+            # ── Remove dev override so it never interferes with production ──
+            rm -f docker-compose.override.yml
+
+            # ── Pre-deploy disk check ──
+            DISK_PCT=$(df / --output=pcent | tail -1 | tr -dc '0-9')
+            if [ "$DISK_PCT" -gt 85 ]; then
+              echo "⚠️  Disk at ${DISK_PCT}% — running emergency cleanup..."
+              docker system prune -af
+              journalctl --vacuum-size=20M
+              apt-get clean 2>/dev/null || true
+            fi
+
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d --force-recreate
+
+            # ── Post-deploy cleanup: remove ALL unused images, not just dangling ──
+            docker system prune -af --filter "until=24h"
+
+            # ── Verify API is healthy ──
+            sleep 10
+            if docker ps --filter "name=safipoints-api" --format '{{.Status}}' | grep -q "unhealthy"; then
+              echo "❌ API container is unhealthy! Checking logs..."
+              docker logs safipoints-api-1 --tail 20
+              exit 1
+            fi
+            echo "✅ Deployment complete — disk at $(df / --output=pcent | tail -1 | tr -d ' ')%"

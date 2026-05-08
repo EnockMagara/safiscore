@@ -1,0 +1,32 @@
+# Local development — overrides for hot-reload, exposed ports, etc.
+services:
+  mongo:
+    ports:
+      - "27017:27017"
+
+  api:
+    build: ./server
+    command: npx nodemon index.js
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "5002:5002"
+
+  client:
+    build:
+      context: ./client
+      target: builder
+    command: npm start
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3000:3000"
+
+  nginx:
+    profiles: ["prod"]

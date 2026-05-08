@@ -1,0 +1,265 @@
+/* ═══════════════════════════════════════════════════════════
+   SafiScore — Credit Dashboard Styles
+   Extends the SafiPoints design system (tokens.css + base.css)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Credit Score Ring ──────────────────────────────────── */
+.ss-score-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto 8px;
+}
+
+.ss-score-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--score-color, var(--gold)) var(--score-pct, 0%),
+    #E5E7EB var(--score-pct, 0%)
+  );
+  padding: 8px;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 0);
+}
+
+.ss-score-number {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.ss-score-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  position: relative;
+  z-index: 1;
+  margin-top: 2px;
+}
+
+/* ── Score Band Colours ──────────────────────────────────── */
+.ss-band-1 { --score-color: #EF4444; }
+.ss-band-2 { --score-color: #F59E0B; }
+.ss-band-3 { --score-color: #FBBF24; }
+.ss-band-4 { --score-color: #10B981; }
+.ss-band-5 { --score-color: #059669; }
+
+/* ── Component Bar ──────────────────────────────────────── */
+.ss-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.ss-bar-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+.ss-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.ss-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--gold), var(--amber));
+  transition: width 0.8s var(--ease-out);
+}
+.ss-bar-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 30px;
+  text-align: right;
+}
+
+/* ── Attestation Card ────────────────────────────────────── */
+.ss-attest-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.ss-attest-card:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
+
+.ss-attest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.ss-attest-lender {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.ss-attest-id {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  word-break: break-all;
+  margin-top: 4px;
+}
+.ss-attest-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.ss-attest-stat {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.ss-attest-stat strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* ── Status Badges ───────────────────────────────────────── */
+.ss-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.ss-badge-active  { background: var(--success-bg); color: var(--success); }
+.ss-badge-expired { background: #F3F4F6;           color: var(--text-tertiary); }
+.ss-badge-revoked { background: var(--danger-bg);  color: var(--danger); }
+
+/* ── Stat Grid ───────────────────────────────────────────── */
+.ss-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.ss-stat-box {
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+.ss-stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.ss-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ── Proof Share Box ─────────────────────────────────────── */
+.ss-share-box {
+  background: var(--gold-subtle);
+  border: 1px solid var(--gold-glow);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 16px;
+}
+.ss-share-url {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+/* ── Lender Portal ───────────────────────────────────────── */
+.ss-verify-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  color: white;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.ss-verify-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.ss-verify-subtitle {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.ss-result-valid {
+  border: 2px solid var(--success);
+  background: var(--success-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.ss-result-invalid {
+  border: 2px solid var(--danger);
+  background: var(--danger-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.ss-result-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+/* ── Score Stars ─────────────────────────────────────────── */
+.ss-stars {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin: 12px 0;
+}
+.ss-star {
+  font-size: 24px;
+  line-height: 1;
+}
+.ss-star-filled { color: var(--gold); }
+.ss-star-empty  { color: #D1D5DB; }
+
+/* ── Consent Banner ──────────────────────────────────────── */
+.ss-consent-banner {
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.ss-consent-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1E40AF;
+  margin-bottom: 6px;
+}
+.ss-consent-body {
+  font-size: 13px;
+  color: #1D4ED8;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}

@@ -1,0 +1,355 @@
+/* ═══════════════════════════════════════════════════════════
+   SafiPoints — Reward Prompt (rp-*)
+   "You earned SAFI!" popup · celebrate + claim flow
+   ─────────────────────────────────────────────────────────
+   Design intent:
+   - Dark navy header with clearly-white Montserrat text
+   - Bold gold SAFI amount on a dark amount card
+   - Gold primary CTA, ghost dismiss
+   - Slides up from bottom-right on desktop, full-width on mobile
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Backdrop ─────────────────────────────────────────────── */
+.rp-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.rp-card {
+  position: fixed;
+  z-index: 101;
+  background: #FDFCFA;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(239, 191, 74, 0.12);
+  font-family: var(--font);
+
+  /* Desktop: bottom-right corner */
+  bottom: 24px;
+  right: 24px;
+  width: 360px;
+}
+@media (max-width: 480px) {
+  .rp-card {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 28px 28px 0 0;
+  }
+}
+
+/* ── Close button ─────────────────────────────────────────── */
+.rp-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  /* sits above the dark header, so needs white text on a semi-transparent bg */
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.rp-close:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* ── Body ─────────────────────────────────────────────────── */
+.rp-body { position: relative; }
+
+/* ── Header — solid dark navy, clearly readable text ─────── */
+.rp-header {
+  background: linear-gradient(160deg, #0F1524 0%, #0d2240 100%);
+  padding: 32px 24px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle radial glow behind the icon */
+.rp-header::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(239, 191, 74, 0.14) 0%, transparent 65%);
+  pointer-events: none;
+}
+.rp-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(239, 191, 74, 0.12);
+  border: 1.5px solid rgba(239, 191, 74, 0.25);
+  margin: 0 auto 14px;
+  position: relative;
+  color: var(--gold);
+  /* Soft gold glow behind the icon ring */
+  box-shadow: 0 0 24px rgba(239, 191, 74, 0.2);
+}
+.rp-header-title {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 800;
+  /* Explicit white — never rely on a CSS variable that may be undefined */
+  color: #FFFFFF;
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  position: relative;
+}
+.rp-header-sub {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.4;
+  position: relative;
+}
+.rp-header-sub strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* ── Amount Card — dark with bold gold SAFI ──────────────── */
+.rp-amount-card {
+  margin: -14px 20px 0;
+  background: linear-gradient(145deg, #111827, #0d1f3c);
+  border: 1.5px solid rgba(239, 191, 74, 0.25);
+  border-radius: 18px;
+  padding: 22px 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.rp-amount-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(239, 191, 74, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.rp-amount-safi {
+  font-family: var(--font);
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  position: relative;
+  display: block;
+}
+.rp-amount-ksh {
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 700;
+  /* white on the dark card — clearly visible */
+  color: #FFFFFF;
+  margin-top: 4px;
+  position: relative;
+  display: block;
+}
+.rp-amount-label {
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 700;
+  /* muted white — clearly visible as a caption */
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 6px;
+  position: relative;
+  display: block;
+}
+
+/* ── CTA Buttons ──────────────────────────────────────────── */
+.rp-cta-primary {
+  display: block;
+  width: calc(100% - 40px);
+  margin: 20px 20px 0;
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px rgba(239, 191, 74, 0.4);
+  letter-spacing: -0.01em;
+}
+.rp-cta-primary:hover {
+  background: var(--gold-light);
+  box-shadow: 0 6px 20px rgba(239, 191, 74, 0.5);
+  transform: translateY(-1px);
+}
+.rp-cta-primary:active { transform: scale(0.98); }
+
+.rp-cta-dismiss {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px;
+  cursor: pointer;
+  transition: color 0.15s;
+  text-align: center;
+}
+.rp-cta-dismiss:hover { color: var(--navy); }
+
+/* ── Benefits (step 2) ────────────────────────────────────── */
+.rp-benefits {
+  padding: 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rp-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.rp-benefit-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(239, 191, 74, 0.1), rgba(239, 191, 74, 0.04));
+  border: 1px solid rgba(239, 191, 74, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--gold);
+}
+.rp-benefit-text strong {
+  display: block;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.rp-benefit-text p {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.rp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #F0EDE6;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+.rp-footer svg { opacity: 0.6; flex-shrink: 0; }
+.rp-footer-dot {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+/* ── Auto-minted success variants ─────────────────────────── */
+.rp-header--success {
+  background: linear-gradient(160deg, #064e3b 0%, #065f46 100%);
+}
+.rp-header--success::before {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 65%);
+}
+.rp-header-icon--success {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
+}
+
+.rp-amount-card--success {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+.rp-amount-card--success::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
+}
+.rp-amount-card--success .rp-amount-safi {
+  color: #34d399;
+}
+
+.rp-benefit-icon--success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04));
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.rp-cta-primary--success {
+  background: #10b981;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+}
+.rp-cta-primary--success:hover {
+  background: #34d399;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+/* ── XRPL transaction link ────────────────────────────────── */
+.rp-tx-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 20px 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  color: #10b981;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.rp-tx-link:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+}
