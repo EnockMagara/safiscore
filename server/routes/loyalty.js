@@ -71,7 +71,7 @@ router.post('/redeem/initiate', authenticateToken, async (req, res, next) => {
     });
 
     res.json({
-      message: `Redemption initiated: ${result.safiAmount} SAFI → ${result.discountAmount} KES discount`,
+      message: `Redemption initiated: ${result.safiAmount} SAFI → ${result.discountAmount} AED discount`,
       ...result,
     });
   } catch (err) {
@@ -88,7 +88,7 @@ router.post('/redeem/confirm', authenticateToken, async (req, res, next) => {
     const result = await RedemptionService.confirm({ code, orderId });
 
     res.json({
-      message: `Redeemed ${result.safiBurned} SAFI for ${result.discountAmount} KES discount`,
+      message: `Redeemed ${result.safiBurned} SAFI for ${result.discountAmount} AED discount`,
       ...result,
       explorerUrl: result.xrplTxHash
         ? `https://testnet.xrpl.org/transactions/${result.xrplTxHash}`

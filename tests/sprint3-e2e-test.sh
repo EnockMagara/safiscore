@@ -51,7 +51,7 @@ C_TRUST=$(jq_get "$C_RES" "d.get('customer',{}).get('trustTxHash','')")
 
 # ──────────────────────────────────────────────────────────────
 heading "STEP 4: Customer Makes Purchase → Earns SAFI"
-echo "  Scenario: Alice spends KES 1,500 at Mama Nyama Kitchen"
+  echo "  Scenario: Alice spends AED 1,500 at Alfanar Restaurant"
 EARN_RES=$(curl -s -X POST "$BASE_URL/api/loyalty/earn" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $M_TOKEN" \
@@ -63,7 +63,7 @@ EARN_BAL=$(jq_get "$EARN_RES" "d.get('newBalance',0)")
 echo "  XRPL Proof: $EXPLORER_BASE/$EARN_HASH"
 
 # ──────────────────────────────────────────────────────────────
-heading "STEP 5: Simulate Webhook from SafiSend (KES 3,000 payment)"
+heading "STEP 5: Simulate Webhook from SafiSend (AED 3,000 payment)"
 WEBHOOK_RES=$(curl -s -X POST "$BASE_URL/api/webhook/safisend" \
   -H "Content-Type: application/json" \
   -d "{\"event\":\"payment_completed\",\"customerPhone\":\"+254700999100\",\"amount\":3000,\"restaurantId\":\"$M_ID\",\"orderId\":\"SAFISEND-E2E-001\"}")
@@ -88,7 +88,7 @@ R_INIT=$(curl -s -X POST "$BASE_URL/api/loyalty/redeem/initiate" \
   -d "{\"merchantId\":\"$M_ID\",\"safiAmount\":200}")
 R_CODE=$(jq_get "$R_INIT" "d.get('code','')")
 R_DISC=$(jq_get "$R_INIT" "d.get('discountAmount',0)")
-[ -n "$R_CODE" ] && green "Redemption code: $R_CODE → KES $R_DISC discount" || red "Initiation failed"
+[ -n "$R_CODE" ] && green "Redemption code: $R_CODE → AED $R_DISC discount" || red "Initiation failed"
 
 # ──────────────────────────────────────────────────────────────
 heading "STEP 8: Confirm Redemption (Burns SAFI on XRPL)"

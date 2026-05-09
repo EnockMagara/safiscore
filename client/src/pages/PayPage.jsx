@@ -153,10 +153,10 @@ export default function PayPage() {
             <span className="pp-summary-label">Order {order.orderNumber}</span>
             <div className="pp-summary-total-wrap">
               {useSafi && discountPreview?.available && (
-                <span className="pp-summary-original">KES {order.total?.toLocaleString()}</span>
+                <span className="pp-summary-original">AED {order.total?.toLocaleString()}</span>
               )}
               <span className="pp-summary-total">
-                KES {(effectiveTotal ?? order.total)?.toLocaleString()}
+                AED {(effectiveTotal ?? order.total)?.toLocaleString()}
               </span>
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function PayPage() {
             {order.items?.map((item, i) => (
               <div key={i} className="pp-summary-item">
                 <span className="pp-summary-item-name">{item.quantity}× {item.name}</span>
-                <span className="pp-summary-item-price">KES {(item.price * item.quantity).toLocaleString()}</span>
+                <span className="pp-summary-item-price">AED {(item.price * item.quantity).toLocaleString()}</span>
               </div>
             ))}
           </div>
@@ -185,7 +185,7 @@ export default function PayPage() {
                 <div className="pp-reward-banner">
                   <div className="pp-reward-banner-icon">✦</div>
                   <div className="pp-reward-banner-text">
-                    <strong>You'll earn KES {(state.safiPreview * (merchant?.earnRate || 0.1)).toFixed(0)} cashback</strong>
+                    <strong>You'll earn AED {(state.safiPreview * (merchant?.earnRate || 0.1)).toFixed(0)} cashback</strong>
                     <span> as {state.safiPreview} SAFI with this payment</span>
                   </div>
                 </div>
@@ -232,12 +232,12 @@ export default function PayPage() {
                           <div className="pp-safi-preview-row">
                             <span>Discount</span>
                             <span className="pp-safi-preview-val pp-safi-preview-val--green">
-                              −KES {discountPreview.discountAmount.toLocaleString()}
+                              −AED {discountPreview.discountAmount.toLocaleString()}
                             </span>
                           </div>
                           <div className="pp-safi-preview-row pp-safi-preview-row--total">
                             <span>You pay</span>
-                            <span className="pp-safi-preview-val">KES {effectiveTotal.toLocaleString()}</span>
+                            <span className="pp-safi-preview-val">AED {effectiveTotal.toLocaleString()}</span>
                           </div>
                         </>
                       ) : discountPreview ? (
@@ -290,7 +290,7 @@ export default function PayPage() {
                   whileTap={selected ? { scale: 0.97 } : {}}
                 >
                   <span className="pp-pay-btn-label">Pay Now</span>
-                  <span className="pp-pay-btn-amount">KES {(effectiveTotal ?? order.total)?.toLocaleString()}</span>
+                  <span className="pp-pay-btn-amount">AED {(effectiveTotal ?? order.total)?.toLocaleString()}</span>
                 </motion.button>
                 <p className="pp-cta-note">🔒 Secured · 256-bit encryption</p>
               </div>

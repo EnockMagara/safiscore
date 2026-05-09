@@ -71,7 +71,7 @@ export default function RedeemPage() {
             ✓
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', marginBottom: 4 }}>
-            {confirmResult.discountAmount} KES
+            {confirmResult.discountAmount} AED
           </h2>
           <p style={{ color: 'var(--text-tertiary)', marginBottom: 20 }}>discount confirmed</p>
           <div className="sp-success">
@@ -144,7 +144,7 @@ export default function RedeemPage() {
                   borderRadius: 8, fontSize: 14, fontWeight: 600,
                   color: 'var(--navy)',
                 }}>
-                  Estimated value: {(parseFloat(amount) * 0.10).toFixed(2)} KES
+                  Estimated value: AED {(parseFloat(amount) * 0.10).toFixed(2)}
                 </div>
               )}
             </div>
@@ -158,7 +158,7 @@ export default function RedeemPage() {
           <div className="sp-section-label" style={{ marginBottom: 16 }}>Present This Code</div>
           <div className="sp-redeem-code">{redemption.code}</div>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 16 }}>
-            <strong>{redemption.safiAmount} SAFI</strong> → <strong>{redemption.discountAmount} KES</strong> customer value
+            <strong>{redemption.safiAmount} SAFI</strong> → <strong>AED {redemption.discountAmount}</strong> customer value
           </p>
           <p style={{ fontSize: 12, color: 'var(--danger)', marginTop: 4, fontWeight: 500 }}>
             Expires in {redemption.expiresInMinutes} minutes

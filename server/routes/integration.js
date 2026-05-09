@@ -75,7 +75,7 @@ router.get('/claim/:pendingId', async (req, res, next) => {
     res.json({
       pendingId: pending._id,
       safiAmount: pending.safiAmount,
-      kshCashback: pending.kshCashback,
+      aedCashback: pending.aedCashback,
       merchantName: pending.merchant?.name,
       earnRate: pending.earnRate,
       status: pending.status,
@@ -119,17 +119,17 @@ router.get('/pending', async (req, res, next) => {
       .sort({ earnedAt: -1 });
 
     const totalSafi = points.reduce((sum, p) => sum + p.safiAmount, 0);
-    const totalKsh  = points.reduce((sum, p) => sum + parseFloat(p.kshCashback), 0);
+    const totalAed  = points.reduce((sum, p) => sum + parseFloat(p.aedCashback), 0);
 
     res.json({
       phone,
       pendingCount: points.length,
       totalSafi,
-      totalKsh: totalKsh.toFixed(2),
+      totalAed: totalAed.toFixed(2),
       points: points.map(p => ({
         id: p._id,
         safiAmount: p.safiAmount,
-        kshCashback: p.kshCashback,
+        aedCashback: p.aedCashback,
         merchantName: p.merchant?.name,
         earnedAt: p.earnedAt,
         claimWindowExpiresAt: p.claimWindowExpiresAt,

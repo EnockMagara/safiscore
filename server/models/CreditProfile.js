@@ -24,7 +24,7 @@ const creditProfileSchema = new mongoose.Schema({
   monthsOfHistory:     { type: Number, default: 0 },
   totalTransactions:   { type: Number, default: 0 },
   uniqueMerchants:     { type: Number, default: 0 },
-  averageMonthlySpend: { type: Number, default: 0 }, // KES
+  averageMonthlySpend: { type: Number, default: 0 }, // AED
   lastTransactionAt:   { type: Date },
   lastComputedAt:      { type: Date },
 

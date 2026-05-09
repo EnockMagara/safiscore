@@ -55,7 +55,7 @@ class RedemptionService {
       code,
       safiAmount,
       discountAmount,
-      currency: 'KES',
+      currency: 'AED',
       expiresAt,
       expiresInMinutes: REDEMPTION_WINDOW_MINUTES,
     };

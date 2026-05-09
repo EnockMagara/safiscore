@@ -314,13 +314,13 @@ class SafiScoreService {
 
   /**
    * Selective-disclosure spend band.
-   * Lenders receive a range category, not the exact KES amount.
+   * Lenders receive a range category, not the exact AED amount.
    */
-  static spendBand(avgMonthlyKes) {
-    if (avgMonthlyKes < 2000)  return 'low';       // < KES 2,000 / month
-    if (avgMonthlyKes < 10000) return 'medium';    // KES 2,000 – 10,000
-    if (avgMonthlyKes < 50000) return 'high';      // KES 10,000 – 50,000
-    return 'very_high';
+  static spendBand(avgMonthlyAed) {
+    if (avgMonthlyAed < 500)   return 'low';       // < AED 500 / month
+    if (avgMonthlyAed < 2000)  return 'medium';    // AED 500 – 2,000
+    if (avgMonthlyAed < 10000) return 'high';      // AED 2,000 – 10,000
+    return 'very_high';                            // AED 10,000+
   }
 }
 

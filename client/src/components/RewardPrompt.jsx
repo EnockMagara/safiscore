@@ -19,7 +19,7 @@ import {
  *   2. autoMinted=false  → New/unclaimed customer. Two-step claim flow.
  *
  * Props:
- *   reward         — { safiEarned, kshCashback, merchantName, pendingId, autoMinted, xrplTxHash, newBalance }
+ *   reward         — { safiEarned, aedCashback, merchantName, pendingId, autoMinted, xrplTxHash, newBalance }
  *   onDismiss      — called when user taps dismiss
  *   onSignUp       — called when user taps claim CTA (only for pending flow)
  *   autoShowDelay  — ms before popup appears (default 1500)
@@ -134,7 +134,7 @@ export default function RewardPrompt({ reward, onDismiss, onSignUp, autoShowDela
 
                   <div className="rp-amount-card rp-amount-card--success">
                     <span className="rp-amount-safi">+{reward.safiEarned} SAFI</span>
-                    <span className="rp-amount-ksh">≈ KES {reward.kshCashback}</span>
+                    <span className="rp-amount-ksh">≈ AED {reward.aedCashback}</span>
                     <span className="rp-amount-label">added to your balance</span>
                   </div>
 
@@ -185,7 +185,7 @@ export default function RewardPrompt({ reward, onDismiss, onSignUp, autoShowDela
 
                   <div className="rp-amount-card">
                     <span className="rp-amount-safi">{reward.safiEarned} SAFI</span>
-                    <span className="rp-amount-ksh">≈ KES {reward.kshCashback}</span>
+                    <span className="rp-amount-ksh">≈ AED {reward.aedCashback}</span>
                     <span className="rp-amount-label">cashback earned</span>
                   </div>
 
@@ -202,7 +202,7 @@ export default function RewardPrompt({ reward, onDismiss, onSignUp, autoShowDela
                   </div>
 
                   <button className="rp-cta-primary" onClick={handleClaim}>
-                    Claim KES {reward.kshCashback}
+                    Claim AED {reward.aedCashback}
                   </button>
                   <button className="rp-cta-dismiss" onClick={handleDismiss}>
                     Maybe later

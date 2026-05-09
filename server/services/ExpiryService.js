@@ -45,7 +45,7 @@ class ExpiryService {
     }).populate('merchant', 'name');
 
     for (const p of due) {
-      const msg = `Reminder: You have ${p.safiAmount} SAFI (KES ${p.kshCashback}) cashback at ${p.merchant?.name}. Claim before ${p.claimWindowExpiresAt.toDateString()}: ${process.env.CLIENT_URL}/claim/${p._id}`;
+      const msg = `Reminder: You have ${p.safiAmount} SAFI (AED ${p.aedCashback}) cashback at ${p.merchant?.name}. Claim before ${p.claimWindowExpiresAt.toDateString()}: ${process.env.CLIENT_URL}/claim/${p._id}`;
       console.log(`[REMINDER SMS → ${p.phone}] ${msg}`);
       // await africasTalking.SMS.send({ to: p.phone, message: msg });
       p.reminderSentAt = new Date();

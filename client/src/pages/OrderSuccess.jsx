@@ -80,7 +80,7 @@ export default function OrderSuccess() {
           </div>
           <div className="os-detail-row">
             <span>Amount Paid</span>
-            <span className="os-detail-value">KES {paymentData.total?.toLocaleString()}</span>
+            <span className="os-detail-value">AED {paymentData.total?.toLocaleString()}</span>
           </div>
           <div className="os-detail-row">
             <span>Payment</span>
@@ -90,7 +90,7 @@ export default function OrderSuccess() {
             <div className="os-detail-row">
               <span>Time</span>
               <span className="os-detail-value">
-                {new Date(paymentData.paidAt).toLocaleTimeString('en-KE', {
+                {new Date(paymentData.paidAt).toLocaleTimeString('en-AE', {
                   hour: '2-digit', minute: '2-digit',
                 })}
               </span>
@@ -112,7 +112,7 @@ export default function OrderSuccess() {
               <div className="os-safi-sub">
                 {reward.autoMinted
                   ? 'Added to your wallet automatically'
-                  : `KES ${reward.kshCashback} cashback waiting for you`}
+                  : `AED ${reward.aedCashback} cashback waiting for you`}
               </div>
             </div>
           </motion.div>

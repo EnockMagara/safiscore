@@ -204,7 +204,7 @@ export default function MerchantMenu() {
               )}
 
               <div className="mm-card-meta">
-                <span className="mm-card-price">KES {item.price.toLocaleString()}</span>
+                <span className="mm-card-price">AED {item.price.toLocaleString()}</span>
                 <span className="mm-card-cat">{item.category || 'Main'}</span>
               </div>
 
@@ -308,7 +308,7 @@ export default function MerchantMenu() {
                   <input
                     className="mm-input"
                     type="text"
-                    placeholder="e.g. Nyama Choma"
+                    placeholder="e.g. Al Harees"
                     value={form.name}
                     onChange={e => updateField('name', e.target.value)}
                     autoFocus
@@ -330,7 +330,7 @@ export default function MerchantMenu() {
                 {/* Price + Category row */}
                 <div className="mm-field-row">
                   <div className="mm-field" style={{ flex: 1 }}>
-                    <label className="mm-label">Price (KES) *</label>
+                    <label className="mm-label">Price (AED) *</label>
                     <input
                       className="mm-input"
                       type="number"

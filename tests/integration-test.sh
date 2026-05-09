@@ -37,13 +37,13 @@ echo "  Simulating: SafiSend payment for a NEW customer (not yet in SafiPoints)"
 WEBHOOK_RES=$(curl -s -X POST "$BASE_URL/api/integration/earn" \
   -H "Content-Type: application/json" \
   -d "{
-    \"customerPhone\": \"+254712345678\",
-    \"customerName\": \"Mary Akinyi\",
-    \"customerEmail\": \"mary@example.com\",
+    \"customerPhone\": \"+971501234567\",
+    \"customerName\": \"Fatima Al Rashidi\",
+    \"customerEmail\": \"fatima@example.ae\",
     \"amount\": 2000,
     \"restaurantId\": \"$M_ID\",
     \"orderId\": \"SAFISEND-ORD-001\",
-    \"currency\": \"KES\"
+    \"currency\": \"AED\"
   }")
 pp "$WEBHOOK_RES"
 
@@ -61,7 +61,7 @@ heading "2. Second Payment → More SAFI"
 W2_RES=$(curl -s -X POST "$BASE_URL/api/integration/earn" \
   -H "Content-Type: application/json" \
   -d "{
-    \"customerPhone\": \"+254712345678\",
+    \"customerPhone\": \"+971501234567\",
     \"amount\": 5000,
     \"restaurantId\": \"$M_ID\",
     \"orderId\": \"SAFISEND-ORD-002\"
@@ -72,7 +72,7 @@ green "Earned $W2_EARNED more SAFI (total balance: $W2_BAL)"
 
 # ═══ TEST 3: Check customer status (from SafiSend UI) ═════════
 heading "3. Customer Status Check (SafiSend checkout widget)"
-STATUS_RES=$(curl -s "$BASE_URL/api/integration/status?phone=%2B254712345678&merchantId=$M_ID")
+STATUS_RES=$(curl -s "$BASE_URL/api/integration/status?phone=%2B971501234567&merchantId=$M_ID")
 pp "$STATUS_RES"
 S_ENROLLED=$(jq_get "$STATUS_RES" "d.get('enrolled',False)")
 S_BAL=$(jq_get "$STATUS_RES" "d.get('balance',0)")
@@ -85,7 +85,7 @@ heading "4. Calculate Discount (before order placement)"
 CALC_RES=$(curl -s -X POST "$BASE_URL/api/integration/calculate-discount" \
   -H "Content-Type: application/json" \
   -d "{
-    \"customerPhone\": \"+254712345678\",
+    \"customerPhone\": \"+971501234567\",
     \"merchantId\": \"$M_ID\",
     \"pointsToRedeem\": 300,
     \"orderAmount\": 3000
@@ -94,14 +94,14 @@ pp "$CALC_RES"
 CALC_AVAIL=$(jq_get "$CALC_RES" "d.get('available',False)")
 CALC_POINTS=$(jq_get "$CALC_RES" "d.get('pointsToUse',0)")
 CALC_DISC=$(jq_get "$CALC_RES" "d.get('discountAmount',0)")
-[ "$CALC_AVAIL" = "True" ] && green "Discount available: $CALC_POINTS SAFI → KES $CALC_DISC off" || red "Discount calculation failed"
+[ "$CALC_AVAIL" = "True" ] && green "Discount available: $CALC_POINTS SAFI → AED $CALC_DISC off" || red "Discount calculation failed"
 
 # ═══ TEST 5: Apply discount at checkout ═══════════════════════
 heading "5. Apply Discount at Checkout (burns tokens on-chain)"
 APPLY_RES=$(curl -s -X POST "$BASE_URL/api/integration/apply-discount" \
   -H "Content-Type: application/json" \
   -d "{
-    \"customerPhone\": \"+254712345678\",
+    \"customerPhone\": \"+971501234567\",
     \"merchantId\": \"$M_ID\",
     \"pointsToUse\": $CALC_POINTS,
     \"orderId\": \"SAFISEND-ORD-003\"
@@ -116,7 +116,7 @@ echo "  Remaining balance: $NEW_BAL SAFI"
 
 # ═══ TEST 6: Verify final status ═════════════════════════════
 heading "6. Final Status After Redemption"
-FINAL_RES=$(curl -s "$BASE_URL/api/integration/status?phone=%2B254712345678&merchantId=$M_ID")
+FINAL_RES=$(curl -s "$BASE_URL/api/integration/status?phone=%2B971501234567&merchantId=$M_ID")
 FINAL_BAL=$(jq_get "$FINAL_RES" "d.get('balance',0)")
 FINAL_EARNED=$(jq_get "$FINAL_RES" "d.get('totalEarned',0)")
 green "Balance: $FINAL_BAL SAFI | Lifetime earned: $FINAL_EARNED SAFI"

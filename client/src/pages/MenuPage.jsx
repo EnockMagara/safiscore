@@ -86,7 +86,7 @@ export default function MenuPage() {
   const cartCount = useMemo(() => cartItems.reduce((s, i) => s + i.quantity, 0), [cartItems]);
   const cartTotal = useMemo(() => cartItems.reduce((s, i) => s + i.price * i.quantity, 0), [cartItems]);
   const safiPreview = merchant ? Math.round(cartTotal * merchant.earnRate * 100) / 100 : 0;
-  const kshCashback = merchant ? (safiPreview * merchant.earnRate).toFixed(0) : 0;
+  const aedCashback = merchant ? (safiPreview * merchant.earnRate).toFixed(0) : 0;
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
@@ -153,7 +153,7 @@ export default function MenuPage() {
         {/* SAFI earn chip — always visible in header */}
         <div className="mp-earn-chip">
           <span className="mp-earn-chip-icon">✦</span>
-          <span>Earn <strong>KES {Math.round(1000 * merchant.earnRate)}</strong> cashback per KES 1,000 spent</span>
+          <span>Earn <strong>AED {Math.round(1000 * merchant.earnRate)}</strong> cashback per AED 1,000 spent</span>
         </div>
       </header>
 
@@ -201,7 +201,7 @@ export default function MenuPage() {
                     <div className="mp-item-body">
                       <div className="mp-item-header">
                         <h3 className="mp-item-name">{item.name}</h3>
-                        <span className="mp-item-price">KES {item.price.toLocaleString()}</span>
+                        <span className="mp-item-price">AED {item.price.toLocaleString()}</span>
                       </div>
                       {item.description && (
                         <p className="mp-item-desc">{item.description}</p>
@@ -277,14 +277,14 @@ export default function MenuPage() {
                 <span className="mp-cart-bar-label">Review Order</span>
               </div>
               <div className="mp-cart-bar-right">
-                <span className="mp-cart-bar-total">KES {cartTotal.toLocaleString()}</span>
+                <span className="mp-cart-bar-total">AED {cartTotal.toLocaleString()}</span>
                 <span className="mp-cart-bar-arrow">›</span>
               </div>
             </button>
             {safiPreview > 0 && (
               <div className="mp-cart-bar-reward">
                 <span className="mp-cart-bar-reward-dot">✦</span>
-                Earn <strong>{safiPreview} SAFI</strong> — KES {kshCashback} cashback on this order
+                Earn <strong>{safiPreview} SAFI</strong> — AED {aedCashback} cashback on this order
               </div>
             )}
           </motion.div>
@@ -343,7 +343,7 @@ export default function MenuPage() {
                           <span className="mp-sheet-item-emoji">{item.emoji}</span>
                           <div className="mp-sheet-item-info">
                             <div className="mp-sheet-item-name">{item.name}</div>
-                            <div className="mp-sheet-item-price">KES {(item.price * item.quantity).toLocaleString()}</div>
+                            <div className="mp-sheet-item-price">AED {(item.price * item.quantity).toLocaleString()}</div>
                           </div>
                           <div className="mp-sheet-qty">
                             <button type="button" className="mp-sheet-qty-btn" onClick={() => updateQty(item._id, -1)}>−</button>
@@ -358,7 +358,7 @@ export default function MenuPage() {
                     <div className="mp-sheet-totals">
                       <div className="mp-sheet-total-row">
                         <span>Subtotal ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
-                        <span className="mp-sheet-total-amount">KES {cartTotal.toLocaleString()}</span>
+                        <span className="mp-sheet-total-amount">AED {cartTotal.toLocaleString()}</span>
                       </div>
                       {safiPreview > 0 && (
                         <div className="mp-sheet-safi-row">
@@ -366,7 +366,7 @@ export default function MenuPage() {
                             <span className="mp-sheet-safi-dot">✦</span>
                             SAFI cashback you&apos;ll earn
                           </span>
-                          <span className="mp-sheet-safi-val">KES {kshCashback}</span>
+                          <span className="mp-sheet-safi-val">AED {aedCashback}</span>
                         </div>
                       )}
                     </div>
@@ -437,7 +437,7 @@ export default function MenuPage() {
                       ) : (
                         <>
                           <span className="mp-sheet-cta-label">Proceed to Payment</span>
-                          <span className="mp-sheet-cta-total">KES {cartTotal.toLocaleString()}</span>
+                          <span className="mp-sheet-cta-total">AED {cartTotal.toLocaleString()}</span>
                         </>
                       )}
                     </button>

@@ -14,7 +14,7 @@ const merchantSchema = new mongoose.Schema({
   // Loyalty config
   earnRate: { type: Number, default: 0.10 },       // 10% of fiat spend → SAFI
   minRedemption: { type: Number, default: 50 },     // minimum SAFI to redeem
-  redemptionRate: { type: Number, default: 0.10 },  // 1 SAFI = 0.10 KES discount
+  redemptionRate: { type: Number, default: 0.10 },  // 1 SAFI = 0.10 AED discount
 
   isActive: { type: Boolean, default: true },
 

@@ -73,8 +73,8 @@ export default function Transactions() {
                     {tx.customer?.name ? ` — ${tx.customer.name}` : ''}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginTop: 2 }}>
-                    {new Date(tx.createdAt).toLocaleString('en-KE', { dateStyle: 'medium', timeStyle: 'short' })}
-                    {tx.fiatAmount ? ` · KES ${tx.fiatAmount.toLocaleString()}` : ''}
+                    {new Date(tx.createdAt).toLocaleString('en-AE', { dateStyle: 'medium', timeStyle: 'short' })}
+                    {tx.fiatAmount ? ` · AED ${tx.fiatAmount.toLocaleString()}` : ''}
                   </div>
                 </div>
               </div>

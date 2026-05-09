@@ -226,7 +226,7 @@ router.post('/order/:id/pay', async (req, res, next) => {
       } : null,
       reward: {
         safiEarned: safiAmount,
-        kshCashback: (safiAmount * earnRate).toFixed(2),
+        aedCashback: (safiAmount * earnRate).toFixed(2),
         earnRate,
         merchantName: merchant.name,
         autoMinted,

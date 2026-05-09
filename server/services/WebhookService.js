@@ -28,7 +28,7 @@ class WebhookService {
       amount,
       restaurantId,
       orderId,
-      currency = 'KES',
+      currency = 'AED',
     } = payload;
 
     if (event !== 'payment_completed') {

@@ -80,7 +80,7 @@ export default function ClaimPage() {
           <div className="cp-status-icon">⏰</div>
           <h2 className="cp-status-title">Claim Window Closed</h2>
           <p className="cp-status-body">
-            These {claimInfo.safiAmount} SAFI (KES {claimInfo.kshCashback}) have expired.
+            These {claimInfo.safiAmount} SAFI (AED {claimInfo.aedCashback}) have expired.
             Future rewards can be claimed within 6 months of earning them.
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function ClaimPage() {
           <h1 className="cp-success-title">Cashback is in your wallet</h1>
           <p className="cp-success-lead">
             <strong>{success.safiMinted} SAFI</strong>
-            {' '}(≈ KES {success.kshCashback}) is now on the blockchain under your new SafiPoints wallet.
+            {' '}(≈ AED {success.aedCashback}) is now on the blockchain under your new SafiPoints wallet.
           </p>
 
           <ol className="cp-next-steps">
@@ -138,7 +138,7 @@ export default function ClaimPage() {
 
           <p className="cp-success-note">
             Cashback value is locked until{' '}
-            {new Date(success.expiresAt).toLocaleDateString('en-KE', {
+            {new Date(success.expiresAt).toLocaleDateString('en-AE', {
               year: 'numeric', month: 'long', day: 'numeric',
             })}
           </p>
@@ -184,14 +184,14 @@ export default function ClaimPage() {
 
         <div className="cp-amount-block">
           <span className="cp-amount-safi">{claimInfo.safiAmount} SAFI</span>
-          <span className="cp-amount-ksh">≈ KES {claimInfo.kshCashback} cashback</span>
+          <span className="cp-amount-ksh">≈ AED {claimInfo.aedCashback} cashback</span>
         </div>
 
         <div className="cp-expiry-strip">
           <span className="cp-expiry-icon">⏳</span>
           Claim by{' '}
           <strong>
-            {new Date(claimInfo.claimWindowExpiresAt).toLocaleDateString('en-KE', {
+            {new Date(claimInfo.claimWindowExpiresAt).toLocaleDateString('en-AE', {
               day: 'numeric', month: 'short', year: 'numeric',
             })}
           </strong>
@@ -222,7 +222,7 @@ export default function ClaimPage() {
               <input
                 id="cp-phone"
                 type="tel"
-                placeholder="+254 712 345 678"
+                placeholder="+971 50 123 4567"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 className="cp-input"
@@ -285,7 +285,7 @@ export default function ClaimPage() {
             ) : (
               <>
                 <span>Claim cashback</span>
-                <span className="cp-btn-amount">KES {claimInfo.kshCashback}</span>
+                <span className="cp-btn-amount">AED {claimInfo.aedCashback}</span>
               </>
             )}
           </button>

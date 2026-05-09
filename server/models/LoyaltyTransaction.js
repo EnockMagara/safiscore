@@ -11,7 +11,7 @@ const loyaltyTransactionSchema = new mongoose.Schema({
   },
 
   safiAmount: { type: Number, required: true },
-  fiatAmount: { type: Number },                    // KES that triggered earn, or discount from redeem
+  fiatAmount: { type: Number },                    // AED that triggered earn, or discount from redeem
 
   // XRPL on-chain proof
   xrplTxHash: { type: String },

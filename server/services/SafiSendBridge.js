@@ -50,7 +50,7 @@ class SafiSendBridge {
     amount,
     restaurantId,
     orderId,
-    currency = 'KES',
+    currency = 'AED',
   }) {
     const merchant = await this.resolveMerchant(restaurantId);
     if (!merchant) {
@@ -97,7 +97,7 @@ class SafiSendBridge {
       processed: true,
       customerPhone,
       safiPending: safiAmount,
-      kshCashback: pending.kshCashback,
+      aedCashback: pending.aedCashback,
       claimWindowExpiresAt: pending.claimWindowExpiresAt,
       message: `${safiAmount} SAFI pending — claim SMS sent to ${customerPhone}`,
     };
@@ -198,7 +198,7 @@ class SafiSendBridge {
     return {
       claimed: true,
       safiMinted: pending.safiAmount,
-      kshCashback: pending.kshCashback,
+      aedCashback: pending.aedCashback,
       xrplAddress: customer.xrplAddress,
       xrplTxHash: result.xrplTxHash,
       explorerUrl: `https://testnet.xrpl.org/transactions/${result.xrplTxHash}`,
@@ -257,7 +257,7 @@ class SafiSendBridge {
       pendingSafi: pendingCount,
       pointsToUse: actualPoints,
       discountAmount: actualDiscount,
-      currency: 'KES',
+      currency: 'AED',
       maxDiscountPercent: 50,
       tier: customer.tier,
     };
@@ -286,7 +286,7 @@ class SafiSendBridge {
       applied: true,
       pointsBurned: pointsToUse,
       discountAmount,
-      currency: 'KES',
+      currency: 'AED',
       xrplTxHash: burnResult.xrplTxHash,
       newBalance: burnResult.newBalance,
       explorerUrl: `https://testnet.xrpl.org/transactions/${burnResult.xrplTxHash}`,
