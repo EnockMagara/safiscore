@@ -113,6 +113,8 @@ export default function CreditDashboard() {
   const [attestResult, setAttestResult]       = useState(null);
   const [attestLoading, setAttestLoading]     = useState(false);
   const [attestError, setAttestError]         = useState(null);
+  const [consentLoading, setConsentLoading]   = useState(false);
+  const [consentError, setConsentError]       = useState(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -139,11 +141,15 @@ export default function CreditDashboard() {
   useEffect(() => { loadData(); }, [loadData]);
 
   const handleConsent = async () => {
+    setConsentLoading(true);
+    setConsentError(null);
     try {
       await api.post('/safiscore/consent');
       await loadData();
-    } catch {
-      setError('Failed to record consent. Please try again.');
+    } catch (err) {
+      setConsentError(err.response?.data?.error || 'Failed to record consent. Please try again.');
+    } finally {
+      setConsentLoading(false);
     }
   };
 
@@ -217,8 +223,18 @@ export default function CreditDashboard() {
             credit profile. No raw data is ever shared with lenders — only cryptographically
             signed attestations of your spending patterns.
           </div>
-          <button className="sp-btn sp-btn-primary" style={{ fontSize: 14 }} onClick={handleConsent}>
-            Activate SafiScore
+          {consentError && (
+            <div style={{ background: 'var(--danger-bg)', color: 'var(--danger)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', marginBottom: 12, fontSize: 13 }}>
+              {consentError}
+            </div>
+          )}
+          <button
+            className="sp-btn sp-btn-primary"
+            style={{ fontSize: 14 }}
+            onClick={handleConsent}
+            disabled={consentLoading}
+          >
+            {consentLoading ? 'Activating…' : 'Activate SafiScore'}
           </button>
         </div>
 
