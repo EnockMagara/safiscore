@@ -28,6 +28,12 @@ const creditProfileSchema = new mongoose.Schema({
   lastTransactionAt:   { type: Date },
   lastComputedAt:      { type: Date },
 
+  // ── Score narrative ────────────────────────────────────────────────────────
+  scoreNarrative: {
+    summary: { type: String, default: '' },
+    signals: { type: [String], default: [] },
+  },
+
   // ── Consent & compliance ──────────────────────────────────────────────────
   consentGivenAt:        { type: Date },
   dataDeletionRequested: { type: Boolean, default: false },

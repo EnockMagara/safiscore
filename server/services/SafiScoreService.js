@@ -144,6 +144,12 @@ class SafiScoreService {
     const totalFiat = transactions.reduce((s, t) => s + (t.fiatAmount || 0), 0);
     const avgMonthlySpend = monthsOfHistory > 0 ? Math.round(totalFiat / monthsOfHistory) : totalFiat;
 
+    const narrative = this.generateNarrative(components, {
+      monthsOfHistory,
+      uniqueMerchants: merchantIds.size,
+      totalTransactions: transactions.length,
+    });
+
     const profile = await CreditProfile.findOneAndUpdate(
       { customer: customerId },
       {
@@ -158,6 +164,7 @@ class SafiScoreService {
           volumeTrend: components.volumeTrend,
           overall:     components.overall,
         },
+        scoreNarrative: narrative,
         monthsOfHistory,
         totalTransactions:   transactions.length,
         uniqueMerchants:     merchantIds.size,
@@ -194,6 +201,105 @@ class SafiScoreService {
       { upsert: true },
     );
     return this.refreshProfile(customerId);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Narrative generation
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Produce a plain-language explanation of a score.
+   * @param {object} components - Output of computeComponents()
+   * @param {object} stats      - { monthsOfHistory, uniqueMerchants, totalTransactions }
+   * @returns {{ summary: string, signals: string[] }}
+   */
+  static generateNarrative(components, stats = {}) {
+    const { recency, consistency, depth, diversity, volumeTrend, scoreBand } = components;
+    const { monthsOfHistory = 0, uniqueMerchants = 0, totalTransactions = 0 } = stats;
+
+    // ── Per-component signals ───────────────────────────────────────────────
+    const signals = [];
+
+    if (recency >= 70) {
+      signals.push('Recent activity. Last transaction within the past month.');
+    } else if (recency >= 40) {
+      signals.push('Some gap in recent activity; last transaction was over a month ago.');
+    } else {
+      signals.push('No recent transactions detected. Score reflects stale spending data.');
+    }
+
+    if (consistency >= 70) {
+      signals.push('Spending is regular and predictable month to month.');
+    } else if (consistency >= 40) {
+      signals.push('Spending patterns are somewhat irregular across months.');
+    } else {
+      signals.push('Spending is highly inconsistent. Transaction frequency varies greatly by month.');
+    }
+
+    if (depth >= 70) {
+      signals.push(`Long transaction history: ${monthsOfHistory} months of verifiable data.`);
+    } else if (depth >= 40) {
+      signals.push(`Moderate history: ${monthsOfHistory} months of verifiable data.`);
+    } else if (monthsOfHistory > 0) {
+      signals.push(`Short history. Only ${monthsOfHistory} month${monthsOfHistory === 1 ? '' : 's'} of data limits confidence in the score.`);
+    } else {
+      signals.push('No transaction history depth. Score is based on very recent activity only.');
+    }
+
+    if (diversity >= 70) {
+      signals.push(`Spending is spread across ${uniqueMerchants} merchants, showing broad retail activity.`);
+    } else if (diversity >= 40) {
+      signals.push(`Spending is concentrated at ${uniqueMerchants} merchant${uniqueMerchants === 1 ? '' : 's'}. Broader activity would strengthen the score.`);
+    } else {
+      signals.push(`Transactions are limited to ${uniqueMerchants} merchant${uniqueMerchants === 1 ? '' : 's'}. Diversity of spending is a key weakness.`);
+    }
+
+    if (volumeTrend >= 60) {
+      signals.push('Spending volume is growing compared to the previous three months.');
+    } else if (volumeTrend >= 40) {
+      signals.push('Spending volume is broadly stable over the past six months.');
+    } else {
+      signals.push('Spending volume has declined compared to the previous three months.');
+    }
+
+    // ── Overall summary ─────────────────────────────────────────────────────
+    const componentMap = { recency, consistency, depth, diversity, volumeTrend };
+    const entries = Object.entries(componentMap);
+    const weakest  = entries.reduce((a, b) => (b[1] < a[1] ? b : a));
+    const strongest = entries.reduce((a, b) => (b[1] > a[1] ? b : a));
+
+    const weakestLabel = {
+      recency:     'a lack of recent transactions',
+      consistency: 'irregular month-to-month spending',
+      depth:       'a short transaction history',
+      diversity:   'spending concentrated at too few merchants',
+      volumeTrend: 'declining spend volume',
+    }[weakest[0]];
+
+    const strongestLabel = {
+      recency:     'recent spending activity',
+      consistency: 'consistent monthly spending',
+      depth:       `${monthsOfHistory} months of transaction history`,
+      diversity:   `spending across ${uniqueMerchants} merchant${uniqueMerchants === 1 ? '' : 's'}`,
+      volumeTrend: 'growing spend volume',
+    }[strongest[0]];
+
+    let summary;
+    if (scoreBand === 5) {
+      summary = `Excellent credit profile. Consistent spending activity across ${uniqueMerchants} merchant${uniqueMerchants === 1 ? '' : 's'} over ${monthsOfHistory} months, with strong recency and stable volume.`;
+    } else if (scoreBand === 4) {
+      summary = `Good credit profile. Solid transaction history over ${monthsOfHistory} months, though ${weakestLabel} holds the score below excellent.`;
+    } else if (scoreBand === 3) {
+      summary = `Moderate credit profile. ${strongestLabel.charAt(0).toUpperCase() + strongestLabel.slice(1)} ${strongest[1] > 0 ? 'is a positive signal' : 'shows some activity'}, but ${weakestLabel} limits the overall score.`;
+    } else if (scoreBand === 2) {
+      summary = `Thin credit profile with limited data available. ${monthsOfHistory > 0 ? `Only ${monthsOfHistory} month${monthsOfHistory === 1 ? '' : 's'} of history` : 'No significant history'} and ${weakestLabel} make it difficult to assess creditworthiness reliably.`;
+    } else {
+      summary = totalTransactions > 0
+        ? `Insufficient data. ${totalTransactions} transaction${totalTransactions === 1 ? '' : 's'} recorded, but more consistent activity over time is needed to generate a reliable score.`
+        : 'Insufficient data. No confirmed transactions have been recorded yet. Regular purchases at SafiPoints merchants will build this profile.';
+    }
+
+    return { summary, signals };
   }
 
   // ─────────────────────────────────────────────────────────────────────────

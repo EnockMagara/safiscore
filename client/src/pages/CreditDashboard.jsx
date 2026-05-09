@@ -21,7 +21,7 @@ function ScoreRing({ band = 1, overall = 0 }) {
   );
 }
 
-function ComponentBar({ label, value }) {
+function ComponentBar({ label, value, signal }) {
   return (
     <div className="ss-bar-row">
       <span className="ss-bar-label">{label}</span>
@@ -29,6 +29,11 @@ function ComponentBar({ label, value }) {
         <div className="ss-bar-fill" style={{ width: `${value}%` }} />
       </div>
       <span className="ss-bar-value">{value}</span>
+      {signal && (
+        <div style={{ width: '100%', fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2, paddingLeft: 0, lineHeight: 1.4 }}>
+          {signal}
+        </div>
+      )}
     </div>
   );
 }
@@ -217,7 +222,7 @@ export default function CreditDashboard() {
     );
   }
 
-  const { scoreBand, scoreBandLabel, scoreBreakdown, monthsOfHistory, totalTransactions, uniqueMerchants, lastTransactionAt } = profile;
+  const { scoreBand, scoreBandLabel, scoreBreakdown, scoreNarrative, monthsOfHistory, totalTransactions, uniqueMerchants, lastTransactionAt } = profile;
 
   return (
     <div className="sp-animate-stagger">
@@ -251,14 +256,33 @@ export default function CreditDashboard() {
           Overall score: {scoreBreakdown?.overall || 0}/100
         </p>
 
+        {/* ── Score narrative ──────────────────────────────────────── */}
+        {scoreNarrative?.summary && (
+          <div style={{
+            background: 'var(--gold-bg, #FFFBEB)',
+            border: '1px solid var(--gold-border, #FDE68A)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '12px 14px',
+            marginBottom: 20,
+            textAlign: 'left',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+              What this score means
+            </div>
+            <p style={{ fontSize: 13, color: '#78350F', lineHeight: 1.6, margin: 0 }}>
+              {scoreNarrative.summary}
+            </p>
+          </div>
+        )}
+
         {/* Component breakdown */}
         <div style={{ textAlign: 'left' }}>
           <div className="sp-section-label" style={{ marginBottom: 12 }}>Score breakdown</div>
-          <ComponentBar label="Consistency" value={scoreBreakdown?.consistency || 0} />
-          <ComponentBar label="Recency"     value={scoreBreakdown?.recency || 0} />
-          <ComponentBar label="Depth"       value={scoreBreakdown?.depth || 0} />
-          <ComponentBar label="Diversity"   value={scoreBreakdown?.diversity || 0} />
-          <ComponentBar label="Trend"       value={scoreBreakdown?.volumeTrend || 0} />
+          <ComponentBar label="Consistency" value={scoreBreakdown?.consistency || 0} signal={scoreNarrative?.signals?.[1]} />
+          <ComponentBar label="Recency"     value={scoreBreakdown?.recency || 0}     signal={scoreNarrative?.signals?.[0]} />
+          <ComponentBar label="Depth"       value={scoreBreakdown?.depth || 0}       signal={scoreNarrative?.signals?.[2]} />
+          <ComponentBar label="Diversity"   value={scoreBreakdown?.diversity || 0}   signal={scoreNarrative?.signals?.[3]} />
+          <ComponentBar label="Trend"       value={scoreBreakdown?.volumeTrend || 0} signal={scoreNarrative?.signals?.[4]} />
         </div>
       </div>
 

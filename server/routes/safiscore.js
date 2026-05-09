@@ -15,6 +15,7 @@ router.get('/profile', authenticateToken, requireRole('customer'), async (req, r
       scoreBand:           profile.scoreBand,
       scoreBandLabel:      SafiScoreService.bandLabel(profile.scoreBand),
       scoreBreakdown:      profile.scoreBreakdown,
+      scoreNarrative:      profile.scoreNarrative,
       monthsOfHistory:     profile.monthsOfHistory,
       totalTransactions:   profile.totalTransactions,
       uniqueMerchants:     profile.uniqueMerchants,
@@ -35,6 +36,7 @@ router.post('/profile/refresh', authenticateToken, requireRole('customer'), asyn
       message:        'Score refreshed',
       scoreBand:      profile.scoreBand,
       scoreBandLabel: SafiScoreService.bandLabel(profile.scoreBand),
+      scoreNarrative: profile.scoreNarrative,
       lastComputedAt: profile.lastComputedAt,
     });
   } catch (err) { next(err); }

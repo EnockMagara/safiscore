@@ -114,6 +114,22 @@ class ProofService {
       .digest('hex');
 
     // ── 7. Persist ────────────────────────────────────────────────────────────
+    const narrative = SafiScoreService.generateNarrative(
+      {
+        recency:     profile.scoreBreakdown.recency,
+        consistency: profile.scoreBreakdown.consistency,
+        depth:       profile.scoreBreakdown.depth,
+        diversity:   profile.scoreBreakdown.diversity,
+        volumeTrend: profile.scoreBreakdown.volumeTrend,
+        scoreBand:   profile.scoreBand,
+      },
+      {
+        monthsOfHistory:   profile.monthsOfHistory,
+        uniqueMerchants:   profile.uniqueMerchants,
+        totalTransactions: profile.totalTransactions,
+      },
+    );
+
     await LenderAttestation.create({
       attestationId,
       customer:           customerId,
@@ -125,6 +141,7 @@ class ProofService {
       merchantDiversity:  statement.merchant_diversity,
       freshnessScore:     statement.freshness_days,
       averageMonthlySpend: statement.spend_band,
+      scoreNarrative:     narrative,
       commitmentHash,
       proofSignature,
       proofHash,
@@ -167,6 +184,7 @@ class ProofService {
         merchantDiversity:  attestation.merchantDiversity,
         spendBand:          attestation.averageMonthlySpend,
         freshnessScore:     attestation.freshnessScore,
+        scoreNarrative:     attestation.scoreNarrative,
         proofHash:          attestation.proofHash,
         issuedAt:           attestation.issuedAt,
         expiresAt:          attestation.expiresAt,

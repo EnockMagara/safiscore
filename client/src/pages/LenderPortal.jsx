@@ -64,6 +64,31 @@ function VerificationResult({ result }) {
         </div>
       </div>
 
+      {/* ── Narrative ────────────────────────────────────────────────── */}
+      {attestation.scoreNarrative?.summary && (
+        <div style={{
+          background: '#F0FDF4',
+          border: '1px solid #A7F3D0',
+          borderRadius: 8,
+          padding: '12px 14px',
+          marginBottom: 20,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#065F46', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+            Score explanation
+          </div>
+          <p style={{ fontSize: 13, color: '#047857', lineHeight: 1.6, margin: 0 }}>
+            {attestation.scoreNarrative.summary}
+          </p>
+          {attestation.scoreNarrative.signals?.length > 0 && (
+            <ul style={{ margin: '10px 0 0', paddingLeft: 16 }}>
+              {attestation.scoreNarrative.signals.map((s, i) => (
+                <li key={i} style={{ fontSize: 12, color: '#065F46', lineHeight: 1.5, marginBottom: 3 }}>{s}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
       {/* Details */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
         {[

@@ -17,6 +17,12 @@ const lenderAttestationSchema = new mongoose.Schema({
   freshnessScore:     { type: Number },   // days since last tx
   averageMonthlySpend:{ type: String },   // spend band: low | medium | high | very_high
 
+  // ── Plain-language explanation ─────────────────────────────────────────────
+  scoreNarrative: {
+    summary: { type: String, default: '' },
+    signals: { type: [String], default: [] },
+  },
+
   // ── Cryptographic proof ───────────────────────────────────────────────────
   commitmentHash: { type: String, required: true }, // SHA256 of sorted XRPL tx hashes
   proofSignature: { type: String, required: true }, // HMAC-SHA256 of signed statement
