@@ -22,7 +22,15 @@ const lenderAttestationSchema = new mongoose.Schema({
     summary: { type: String, default: '' },
     signals: { type: [String], default: [] },
   },
-
+  // ── Score component breakdown (snapshot at attestation time) ─────────────
+  scoreBreakdown: {
+    recency:     { type: Number },
+    consistency: { type: Number },
+    depth:       { type: Number },
+    diversity:   { type: Number },
+    volumeTrend: { type: Number },
+    overall:     { type: Number },
+  },
   // ── Cryptographic proof ───────────────────────────────────────────────────
   commitmentHash: { type: String, required: true }, // SHA256 of sorted XRPL tx hashes
   proofSignature: { type: String, required: true }, // HMAC-SHA256 of signed statement

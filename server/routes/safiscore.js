@@ -76,11 +76,11 @@ router.post('/generate-proof', authenticateToken, requireRole('customer'), async
 
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
     res.json({
-      message:       'Attestation generated. Share the link with your lender.',
-      attestationId: result.attestationId,
-      proofHash:     result.proofHash,
-      shareUrl:      `${clientUrl}/verify/${result.attestationId}`,
-      expiresAt:     result.expiresAt,
+      message:          'Signed attestation generated. Share the link with your lender.',
+      attestationId:    result.attestationId,
+      signatureHash:    result.proofHash,
+      shareUrl:         `${clientUrl}/verify/${result.attestationId}`,
+      expiresAt:        result.expiresAt,
     });
   } catch (err) { next(err); }
 });
@@ -102,7 +102,7 @@ router.get('/attestations', authenticateToken, requireRole('customer'), async (r
 router.delete('/attestations/:attestationId', authenticateToken, requireRole('customer'), async (req, res, next) => {
   try {
     const result = await ProofService.revokeProof(req.params.attestationId, req.user.id);
-    res.json({ message: 'Attestation revoked. The lender can no longer use this proof.', ...result });
+    res.json({ message: 'Attestation revoked. The lender can no longer access this signed attestation.', ...result });
   } catch (err) { next(err); }
 });
 

@@ -3,6 +3,303 @@
    Extends the SafiPoints design system (tokens.css + base.css)
    ═══════════════════════════════════════════════════════════ */
 
+/* ════════════════════════════════════════════════════════════
+   CREDIT REPORT — Professional lender-facing document
+   ════════════════════════════════════════════════════════════ */
+
+.cr-report {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #111827;
+}
+
+/* ── Report header ─────────────────────────────────────── */
+.cr-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0F172A;
+  padding: 20px 28px;
+}
+.cr-report-wordmark {
+  font-size: 22px;
+  font-weight: 800;
+  color: #F59E0B;
+  letter-spacing: -0.02em;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-report-type {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-report-status-verified {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #34D399;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34D399;
+  flex-shrink: 0;
+}
+
+/* ── Sections ──────────────────────────────────────────── */
+.cr-section {
+  padding: 20px 28px;
+}
+.cr-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6B7280;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  margin-bottom: 14px;
+}
+.cr-divider {
+  height: 1px;
+  background: #F3F4F6;
+  margin: 0 28px;
+}
+
+/* ── Field labels / values ─────────────────────────────── */
+.cr-field-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9CA3AF;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  margin-bottom: 3px;
+}
+.cr-field-value {
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.cr-mono {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 11px;
+}
+.cr-hash {
+  word-break: break-all;
+  color: #4B5563;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* ── Metadata grid ─────────────────────────────────────── */
+.cr-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 20px 28px;
+}
+
+/* ── Score section ─────────────────────────────────────── */
+.cr-score-section {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+.cr-score-badge {
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-align: center;
+  flex-shrink: 0;
+  min-width: 100px;
+}
+.cr-score-band-number {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-score-band-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 2px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-score-band-scale {
+  font-size: 10px;
+  color: #9CA3AF;
+  margin-top: 2px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-score-left  { flex-shrink: 0; }
+.cr-score-right { flex: 1; }
+.cr-score-headline {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-score-overall {
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 10px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-score-overall strong { color: #111827; }
+.cr-score-narrative {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Key indicators grid ───────────────────────────────── */
+.cr-indicators-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.cr-indicator-box {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.cr-indicator-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9CA3AF;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  margin-bottom: 4px;
+}
+.cr-indicator-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+/* ── Factor rows ───────────────────────────────────────── */
+.cr-factors-list { display: flex; flex-direction: column; gap: 14px; }
+.cr-factor-row   { }
+.cr-factor-meta  { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+.cr-factor-label { font-size: 13px; font-weight: 600; color: #111827; font-family: var(--font-sans, system-ui, sans-serif); }
+.cr-factor-weight {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-factor-desc {
+  font-size: 11px;
+  color: #6B7280;
+  margin-bottom: 6px;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+.cr-factor-bar-wrap  { display: flex; align-items: center; gap: 10px; }
+.cr-factor-bar-track {
+  flex: 1;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.cr-factor-bar-fill  { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+.cr-factor-score     { font-size: 12px; font-weight: 700; min-width: 28px; text-align: right; font-family: var(--font-sans, system-ui, sans-serif); }
+
+/* ── Analyst signals ───────────────────────────────────── */
+.cr-signals-list  { margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6; }
+.cr-signals-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9CA3AF; font-family: var(--font-sans, system-ui, sans-serif); margin-bottom: 8px; }
+.cr-signal-row    { display: flex; gap: 8px; margin-bottom: 5px; }
+.cr-signal-bullet { color: #9CA3AF; font-size: 13px; flex-shrink: 0; }
+.cr-signal-text   { font-size: 12px; color: #4B5563; line-height: 1.5; font-family: var(--font-sans, system-ui, sans-serif); }
+
+/* ── Integrity section ─────────────────────────────────── */
+.cr-integrity-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
+.cr-integrity-note {
+  font-size: 11px;
+  color: #9CA3AF;
+  line-height: 1.5;
+  margin: 0;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+/* ── Disclaimer ────────────────────────────────────────── */
+.cr-disclaimer {
+  background: #F9FAFB;
+  border-top: 1px solid #E5E7EB;
+  padding: 16px 28px;
+}
+.cr-disclaimer-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #9CA3AF;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  margin-bottom: 6px;
+}
+.cr-disclaimer-body {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #6B7280;
+  margin: 0;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+/* ── Print row ─────────────────────────────────────────── */
+.cr-print-row { padding: 16px 28px; text-align: right; border-top: 1px solid #F3F4F6; }
+.cr-print-btn { font-size: 12px; }
+
+/* ── Invalid attestation ───────────────────────────────── */
+.cr-invalid {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+}
+.cr-invalid-icon  { font-size: 36px; color: #DC2626; margin-bottom: 8px; }
+.cr-invalid-title { font-size: 18px; font-weight: 700; color: #991B1B; margin-bottom: 8px; font-family: var(--font-sans, system-ui, sans-serif); }
+.cr-invalid-body  { font-size: 14px; color: #B91C1C; line-height: 1.5; margin-bottom: 10px; }
+.cr-invalid-hint  { font-size: 12px; color: #9CA3AF; }
+
+/* ════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ════════════════════════════════════════════════════════════ */
+@media print {
+  body { background: white !important; margin: 0; }
+  .no-print { display: none !important; }
+  .cr-report {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+  .cr-report-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cr-factor-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cr-disclaimer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 /* ── Credit Score Ring ──────────────────────────────────── */
 .ss-score-ring {
   width: 120px;

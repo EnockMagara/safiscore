@@ -19,6 +19,10 @@ const SafiScoreService    = require('./SafiScoreService');
 
 const PROOF_EXPIRY_DAYS = 30;
 
+// Minimum eligibility thresholds for issuing a signed attestation
+const MIN_TRANSACTIONS = 1;  // DEMO: lowered from 5
+const MIN_MONTHS       = 0;  // DEMO: no time gate (was 3 months)
+
 function hmacSha256(data, secret) {
   return crypto.createHmac('sha256', secret).update(data).digest('hex');
 }
@@ -48,8 +52,25 @@ class ProofService {
 
     if (transactions.length === 0) {
       throw Object.assign(
-        new Error('No attested transactions found — at least one confirmed purchase is needed'),
-        { statusCode: 422 },
+        new Error('No transaction history found. At least 1 confirmed purchase is required to generate a signed attestation.'),
+        { statusCode: 422, code: 'INSUFFICIENT_DATA', currentTransactions: 0, currentMonths: 0 },
+      );
+    }
+
+    if (transactions.length < MIN_TRANSACTIONS) {
+      throw Object.assign(
+        new Error(`Insufficient transactions. At least ${MIN_TRANSACTIONS} confirmed purchases are required. You currently have ${transactions.length}.`),
+        { statusCode: 422, code: 'INSUFFICIENT_TRANSACTIONS', currentTransactions: transactions.length, requiredTransactions: MIN_TRANSACTIONS },
+      );
+    }
+
+    const firstTxDate    = transactions[0].createdAt;
+    const monthsOfData   = (Date.now() - firstTxDate.getTime()) / (30 * 24 * 60 * 60 * 1000);
+    if (monthsOfData < MIN_MONTHS) {
+      const remaining = Math.ceil(MIN_MONTHS - monthsOfData);
+      throw Object.assign(
+        new Error(`Insufficient history depth. At least ${MIN_MONTHS} months of transaction history are required. Continue transacting for approximately ${remaining} more month${remaining === 1 ? '' : 's'}.`),
+        { statusCode: 422, code: 'INSUFFICIENT_HISTORY', currentMonths: Math.floor(monthsOfData), requiredMonths: MIN_MONTHS },
       );
     }
 
@@ -141,7 +162,8 @@ class ProofService {
       merchantDiversity:  statement.merchant_diversity,
       freshnessScore:     statement.freshness_days,
       averageMonthlySpend: statement.spend_band,
-      scoreNarrative:     narrative,
+      scoreNarrative:  narrative,
+      scoreBreakdown:  profile.scoreBreakdown,
       commitmentHash,
       proofSignature,
       proofHash,
@@ -177,17 +199,23 @@ class ProofService {
     return {
       valid: true,
       attestation: {
-        attestationId:      attestation.attestationId,
-        scoreBand:          attestation.scoreBand,
-        scoreBandLabel:     SafiScoreService.bandLabel(attestation.scoreBand),
-        monthsOfHistory:    attestation.monthsOfHistory,
-        merchantDiversity:  attestation.merchantDiversity,
-        spendBand:          attestation.averageMonthlySpend,
-        freshnessScore:     attestation.freshnessScore,
-        scoreNarrative:     attestation.scoreNarrative,
-        proofHash:          attestation.proofHash,
-        issuedAt:           attestation.issuedAt,
-        expiresAt:          attestation.expiresAt,
+        attestationId:     attestation.attestationId,
+        scoreBand:         attestation.scoreBand,
+        scoreBandLabel:    SafiScoreService.bandLabel(attestation.scoreBand),
+        monthsOfHistory:   attestation.monthsOfHistory,
+        merchantDiversity: attestation.merchantDiversity,
+        spendBand:         attestation.averageMonthlySpend,
+        freshnessScore:    attestation.freshnessScore,
+        scoreNarrative:    attestation.scoreNarrative,
+        scoreBreakdown:    attestation.scoreBreakdown,
+        proofHash:         attestation.proofHash,
+        issuedAt:          attestation.issuedAt,
+        expiresAt:         attestation.expiresAt,
+        lenderName:        attestation.lenderName,
+        lenderIdentifier:  attestation.lenderIdentifier,
+        subjectRef:        attestation.customerXrplWallet
+          ? `${attestation.customerXrplWallet.slice(0, 8)}...${attestation.customerXrplWallet.slice(-4)}`
+          : 'REDACTED',
       },
     };
   }

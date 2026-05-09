@@ -83,6 +83,21 @@ function AttestationCard({ attestation, onRevoke }) {
   );
 }
 
+function EligibilityRow({ label, current, required }) {
+  const met = current >= required;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span style={{ fontSize: 14, color: met ? '#16A34A' : '#D97706', flexShrink: 0 }}>
+        {met ? '✓' : '○'}
+      </span>
+      <span style={{ fontSize: 12, color: met ? '#15803D' : '#92400E', flex: 1 }}>{label}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color: met ? '#15803D' : '#B45309' }}>
+        {current} / {required}
+      </span>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function CreditDashboard() {
   const [profile, setProfile]       = useState(null);
@@ -91,13 +106,13 @@ export default function CreditDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError]           = useState(null);
 
-  // Proof generation state
-  const [showProofForm, setShowProofForm]   = useState(false);
-  const [lenderInput, setLenderInput]       = useState('');
-  const [lenderName, setLenderName]         = useState('');
-  const [proofResult, setProofResult]       = useState(null);
-  const [proofLoading, setProofLoading]     = useState(false);
-  const [proofError, setProofError]         = useState(null);
+  // Attestation generation state
+  const [showAttestForm, setShowAttestForm]   = useState(false);
+  const [lenderInput, setLenderInput]         = useState('');
+  const [lenderName, setLenderName]           = useState('');
+  const [attestResult, setAttestResult]       = useState(null);
+  const [attestLoading, setAttestLoading]     = useState(false);
+  const [attestError, setAttestError]         = useState(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -142,23 +157,28 @@ export default function CreditDashboard() {
     }
   };
 
-  const handleGenerateProof = async (e) => {
+  const handleGenerateAttestation = async (e) => {
     e.preventDefault();
     if (!lenderInput.trim()) return;
-    setProofLoading(true);
-    setProofError(null);
-    setProofResult(null);
+    setAttestLoading(true);
+    setAttestError(null);
+    setAttestResult(null);
     try {
       const res = await api.post('/safiscore/generate-proof', {
         lenderIdentifier: lenderInput.trim(),
         lenderName:       lenderName.trim() || undefined,
       });
-      setProofResult(res.data);
-      await loadData(); // refresh attestation list
+      setAttestResult(res.data);
+      await loadData();
     } catch (err) {
-      setProofError(err.response?.data?.error || 'Failed to generate proof.');
+      const data = err.response?.data;
+      if (err.response?.status === 422) {
+        setAttestError(data?.error || 'You do not yet meet the minimum eligibility requirements to generate a signed attestation.');
+      } else {
+        setAttestError(data?.error || 'Failed to generate attestation. Please try again.');
+      }
     } finally {
-      setProofLoading(false);
+      setAttestLoading(false);
     }
   };
 
@@ -194,8 +214,8 @@ export default function CreditDashboard() {
           <div className="ss-consent-title">Activate Your SafiScore</div>
           <div className="ss-consent-body">
             SafiScore uses your anonymised retail transaction history to build a verifiable
-            credit profile. No raw data is ever shared with lenders — only cryptographic
-            proofs of your spending patterns.
+            credit profile. No raw data is ever shared with lenders — only cryptographically
+            signed attestations of your spending patterns.
           </div>
           <button className="sp-btn sp-btn-primary" style={{ fontSize: 14 }} onClick={handleConsent}>
             Activate SafiScore
@@ -203,17 +223,26 @@ export default function CreditDashboard() {
         </div>
 
         <div className="sp-card">
-          <div className="sp-section-label" style={{ marginBottom: 12 }}>How it works</div>
+          <div className="sp-section-label" style={{ marginBottom: 16 }}>How it works</div>
           {[
-            ['🛒 Shop normally', 'Every purchase at a SafiPoints merchant creates a private, cryptographically attested transaction record.'],
-            ['📊 Build your profile', 'SafiScore analyses consistency, depth, and diversity of your retail history over time.'],
-            ['🔒 Share selectively', 'When you apply for a loan, generate a time-limited proof. The lender verifies your score — without seeing your transactions.'],
-          ].map(([title, desc]) => (
-            <div key={title} style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-              <div style={{ fontSize: 24, lineHeight: 1 }}>{title.split(' ')[0]}</div>
+            ['01', 'Shop normally', 'Every purchase at a SafiPoints merchant creates a private, cryptographically attested transaction record.'],
+            ['02', 'Build your profile', 'SafiScore analyses consistency, depth, and diversity of your retail history over time.'],
+            ['03', 'Share selectively', 'When you apply for a loan, generate a 30-day signed attestation for a specific lender. They verify your score without seeing your transactions.'],
+          ].map(([step, title, desc]) => (
+            <div key={step} style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
+              <div style={{
+                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: 11,
+                fontWeight: 700,
+                color: 'var(--gold)',
+                letterSpacing: '0.05em',
+                paddingTop: 2,
+                flexShrink: 0,
+                minWidth: 20,
+              }}>{step}</div>
               <div>
-                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{title.slice(3)}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{desc}</div>
+                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4, color: 'var(--text-primary)' }}>{title}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{desc}</div>
               </div>
             </div>
           ))}
@@ -308,32 +337,57 @@ export default function CreditDashboard() {
         </div>
       </div>
 
-      {/* ── Generate proof ───────────────────────────────────────────── */}
+      {/* ── Share with lender ─────────────────────────────────────── */}
       <div className="sp-card" style={{ marginBottom: 20 }}>
         <div className="sp-section-label" style={{ marginBottom: 4 }}>Share with a lender</div>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16, lineHeight: 1.5 }}>
-          Generate a 30-day cryptographic proof for a specific lender.
-          They verify your score without seeing your transactions.
+          Generate a 30-day signed attestation for a specific lender.
+          They verify your score without accessing your transactions.
         </p>
 
-        {!showProofForm && !proofResult && (
+        {/* Eligibility progress — shown when not yet eligible */}
+        {(totalTransactions < 1) && (
+          <div style={{
+            background: '#FFF7ED',
+            border: '1px solid #FED7AA',
+            borderRadius: 'var(--radius-sm)',
+            padding: '12px 14px',
+            marginBottom: 16,
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+              Eligibility for signed attestations
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <EligibilityRow
+                label="1 confirmed transaction (demo)"
+                current={totalTransactions}
+                required={1}
+                unit="transactions"
+              />
+            </div>
+          </div>
+        )}
+
+        {!showAttestForm && !attestResult && (
           <button
             className="sp-btn sp-btn-gold"
             style={{ width: '100%' }}
-            onClick={() => setShowProofForm(true)}
+            onClick={() => setShowAttestForm(true)}
+            disabled={totalTransactions < 1}
+            title={totalTransactions < 1 ? 'Keep transacting to unlock attestations' : undefined}
           >
-            Generate proof for a lender
+            Generate signed attestation
           </button>
         )}
 
-        {showProofForm && !proofResult && (
-          <form onSubmit={handleGenerateProof}>
+        {showAttestForm && !attestResult && (
+          <form onSubmit={handleGenerateAttestation}>
             <div className="sp-form-group">
               <label className="sp-label">Lender identifier *</label>
               <input
                 className="sp-input"
                 type="text"
-                placeholder="e.g. faulu-kenya or lender@example.com"
+                placeholder="e.g. emiratesnbd or officer@lender.ae"
                 value={lenderInput}
                 onChange={e => setLenderInput(e.target.value)}
                 required
@@ -344,22 +398,22 @@ export default function CreditDashboard() {
               <input
                 className="sp-input"
                 type="text"
-                placeholder="e.g. Faulu Kenya MFI"
+                placeholder="e.g. Emirates NBD — Personal Finance"
                 value={lenderName}
                 onChange={e => setLenderName(e.target.value)}
               />
             </div>
-            {proofError && (
-              <p style={{ color: 'var(--danger)', fontSize: 13, marginTop: 8 }}>{proofError}</p>
+            {attestError && (
+              <p style={{ color: 'var(--danger)', fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>{attestError}</p>
             )}
             <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-              <button type="submit" className="sp-btn sp-btn-gold" style={{ flex: 1 }} disabled={proofLoading}>
-                {proofLoading ? 'Generating…' : 'Generate proof'}
+              <button type="submit" className="sp-btn sp-btn-gold" style={{ flex: 1 }} disabled={attestLoading}>
+                {attestLoading ? 'Generating…' : 'Generate attestation'}
               </button>
               <button
                 type="button"
                 className="sp-btn sp-btn-ghost"
-                onClick={() => { setShowProofForm(false); setProofError(null); }}
+                onClick={() => { setShowAttestForm(false); setAttestError(null); }}
               >
                 Cancel
               </button>
@@ -367,30 +421,30 @@ export default function CreditDashboard() {
           </form>
         )}
 
-        {proofResult && (
+        {attestResult && (
           <div className="ss-share-box">
             <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
-              ✓ Proof generated — share this link with your lender
+              Signed attestation generated. Share this link with your lender.
             </p>
-            <p className="ss-share-url">{proofResult.shareUrl}</p>
+            <p className="ss-share-url">{attestResult.shareUrl}</p>
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button
                 className="sp-btn sp-btn-gold"
                 style={{ flex: 1, fontSize: 13 }}
-                onClick={() => navigator.clipboard.writeText(proofResult.shareUrl)}
+                onClick={() => navigator.clipboard.writeText(attestResult.shareUrl)}
               >
                 Copy link
               </button>
               <button
                 className="sp-btn sp-btn-ghost"
                 style={{ fontSize: 13 }}
-                onClick={() => { setProofResult(null); setShowProofForm(false); setLenderInput(''); setLenderName(''); }}
+                onClick={() => { setAttestResult(null); setShowAttestForm(false); setLenderInput(''); setLenderName(''); }}
               >
                 Done
               </button>
             </div>
             <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 8 }}>
-              Expires: {new Date(proofResult.expiresAt).toLocaleDateString()}
+              Valid until: {new Date(attestResult.expiresAt).toLocaleDateString('en-AE', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
         )}
